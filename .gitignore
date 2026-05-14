@@ -1,0 +1,76 @@
+# ──────────────────────────────────────────
+# Python / Backend
+# ──────────────────────────────────────────
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ──────────────────────────────────────────
+# Node / Frontend
+# ──────────────────────────────────────────
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ──────────────────────────────────────────
+# Secrets & Database  (NEVER commit these)
+# ──────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+
+# ──────────────────────────────────────────
+# Logs
+# ──────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ──────────────────────────────────────────
+# macOS
+# ──────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ──────────────────────────────────────────
+# Editors
+# ──────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ──────────────────────────────────────────
+# AI / Tool state  (local plugin state)
+# ──────────────────────────────────────────
+.omc/
+
+# ──────────────────────────────────────────
+# Keep these tracked
+# ──────────────────────────────────────────
+# .env.example  — template file, safe to commit
+# .github/      — copilot-instructions.md and workflows

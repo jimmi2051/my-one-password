@@ -1,0 +1,19 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Secrets — contains Google OAuth keys + JWT secret
+.env
+
+# SQLite database — contains encrypted user passwords
+*.db
+*.db-shm
+*.db-wal
+
+# Test / type-check caches
+.pytest_cache/
+.mypy_cache/

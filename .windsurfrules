@@ -1,0 +1,54 @@
+# Windsurf AI Rules for one-password
+
+## Security Rules (Critical)
+- **Never store plaintext passwords or vault keys to disk**
+- **Do not change AES-256-GCM format without a migration**
+- **Do not log decrypted field values**
+- **Do not bypass `get_vault_key()` dependency**
+- **Call `secure_wipe()` when evicting keys — never skip it**
+- **No test suite — be conservative with crypto/auth changes**
+
+## Stack & Platform
+- FastAPI (Python 3.11+), React 19/TypeScript, SQLite
+- macOS only (Touch ID via Keychain)
+
+## Key Files
+| File | Purpose |
+|------|---------|
+| backend/main.py | FastAPI app, CORS, rate limiter, lifespan |
+| backend/crypto.py | encrypt(), decrypt(), derive_key(), secure_wipe() |
+| backend/vault_store.py | VaultKeyStore singleton, thread-safe |
+| backend/dependencies.py | get_current_user(), get_jti(), get_vault_key() |
+| backend/models.py | SQLAlchemy 2.x Mapped[] models |
+| backend/schemas.py | Pydantic *Create/*Update/*Out schemas |
+| backend/config.py | All config from env (dotenv) |
+| backend/auth/ | google_oauth.py, session.py (JWT), keychain.py |
+| backend/routers/ | auth.py, entries.py, categories.py, generator.py, vault.py |
+| frontend/src/api/client.ts | Axios (withCredentials: true), typed API methods |
+| frontend/src/hooks/useVault.ts | TanStack Query hooks |
+
+## Backend Conventions
+- All config from `config.py` — never `os.getenv()` in routers
+- All new routers registered in `main.py` via `app.include_router()`
+- Every DB query on VaultEntry/Category must filter by `user_id`
+- Encrypted fields: encrypt on write, decrypt in `_serialize()` before returning
+- Rate limiting on sensitive endpoints: 5/min, 10/hr per IP
+
+## Frontend Conventions
+- All API calls through `frontend/src/api/client.ts` only
+- TanStack Query: always `invalidateQueries` on mutation success
+- API base via `VITE_API_BASE_URL` env var
+- Tailwind CSS only (no CSS modules)
+
+## Dev Commands
+```bash
+./start.sh                                    # both servers
+cd backend && source venv/bin/activate        # ALWAYS do this before Python
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+cd frontend && npm run dev                    # port 5173
+cd frontend && npm run lint
+cd frontend && npm run build
+```
+
+- Backend .env lives at `backend/.env` (not repo root)
+- No test suite exists
