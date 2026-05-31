@@ -41,6 +41,17 @@ export interface ImportResult {
   errors: number
 }
 
+export interface TouchIdStatus {
+  registered: boolean
+  keychain_available: boolean
+}
+
+export interface WebAuthnLoginResult {
+  message: string
+  email: string
+  requires_password: boolean
+}
+
 // API methods
 export const authApi = {
   me: () => api.get<{ email: string; unlocked: boolean }>('/auth/me'),
@@ -50,6 +61,13 @@ export const authApi = {
     api.post('/auth/setup-master-password', { master_password: password }),
   logout: () => api.post('/auth/logout'),
   loginWithGoogle: () => { window.location.href = `${API_BASE}/auth/google` },
+  // Touch ID / WebAuthn
+  touchIdStatus: () => api.get<TouchIdStatus>('/auth/touchid-status'),
+  webAuthnRegisterOptions: () => api.get<{ options: object }>('/auth/webauthn/register-options'),
+  webAuthnRegister: (credential: object) => api.post('/auth/webauthn/register', { credential }),
+  webAuthnLoginOptions: () => api.post<{ options: object }>('/auth/webauthn/login-options', {}),
+  webAuthnLogin: (credential: object) =>
+    api.post<WebAuthnLoginResult>('/auth/webauthn/login', { credential }),
 }
 
 export const entriesApi = {

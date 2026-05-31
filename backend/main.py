@@ -8,7 +8,7 @@ from slowapi.errors import RateLimitExceeded
 from database import init_db
 from vault_store import vault_store
 from config import FRONTEND_URL
-from routers import auth, entries, categories, generator, vault
+from routers import auth, entries, categories, generator, vault, webauthn
 
 
 @asynccontextmanager
@@ -44,6 +44,7 @@ app.include_router(entries.router)
 app.include_router(categories.router)
 app.include_router(generator.router)
 app.include_router(vault.router)
+app.include_router(webauthn.router)
 
 
 @app.get("/")

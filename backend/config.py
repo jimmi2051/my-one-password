@@ -21,6 +21,12 @@ DB_PATH = os.getenv("DB_PATH", "./vault.db")
 PORT = int(os.getenv("PORT", "8008"))
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 
+# WebAuthn / Touch ID
+_frontend_host = FRONTEND_URL.split("://", 1)[-1].split(":")[0]  # e.g. "localhost"
+WEBAUTHN_RP_ID: str = os.getenv("WEBAUTHN_RP_ID", _frontend_host)
+WEBAUTHN_RP_NAME: str = os.getenv("WEBAUTHN_RP_NAME", "One Password")
+WEBAUTHN_ORIGIN: str = os.getenv("WEBAUTHN_ORIGIN", FRONTEND_URL)
+
 # Argon2id parameters (OWASP recommended minimums)
 ARGON2_TIME_COST = 3
 ARGON2_MEMORY_COST = 65536  # 64 MB

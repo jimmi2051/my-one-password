@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import String, DateTime, ForeignKey
+from sqlalchemy import String, DateTime, ForeignKey, LargeBinary, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from database import Base
 
@@ -15,6 +15,9 @@ class UserProfile(Base):
     vault_key_enc: Mapped[str] = mapped_column(String, nullable=False)  # AES-GCM(vault_key, Argon2-key)
     argon2_salt: Mapped[str] = mapped_column(String, nullable=False)  # base64-encoded salt
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    webauthn_credentials: Mapped[list["WebAuthnCredential"]] = relationship(
+        "WebAuthnCredential", back_populates="user", cascade="all, delete-orphan"
+    )
 
 class Category(Base):
     __tablename__ = "categories"
@@ -37,3 +40,13 @@ class VaultEntry(Base):
     category_obj: Mapped["Category | None"] = relationship("Category", back_populates="entries")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+class WebAuthnCredential(Base):
+    __tablename__ = "webauthn_credentials"
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_uuid)
+    user_id: Mapped[str] = mapped_column(String, ForeignKey("user_profile.id", ondelete="CASCADE"), nullable=False, index=True)
+    credential_id: Mapped[str] = mapped_column(String, unique=True, nullable=False)  # base64url
+    public_key: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)           # COSE-encoded
+    sign_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    user: Mapped["UserProfile"] = relationship("UserProfile", back_populates="webauthn_credentials")

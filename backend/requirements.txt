@@ -11,3 +11,4 @@ slowapi==0.1.9
 python-dotenv==1.0.1
 python-multipart==0.0.9
 aiofiles==23.2.1
+webauthn>=2.0.0

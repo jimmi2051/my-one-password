@@ -58,6 +58,28 @@ class TokenResponse(BaseModel):
     message: str
     email: Optional[str] = None
 
+# WebAuthn / Touch ID schemas
+class TouchIdStatusOut(BaseModel):
+    registered: bool       # user has a WebAuthn credential stored
+    keychain_available: bool  # vault key exists in macOS Keychain
+
+class WebAuthnRegisterOptionsOut(BaseModel):
+    options: dict          # PublicKeyCredentialCreationOptions (JSON-serializable)
+
+class WebAuthnRegisterRequest(BaseModel):
+    credential: dict       # PublicKeyCredential from navigator.credentials.create()
+
+class WebAuthnLoginOptionsOut(BaseModel):
+    options: dict          # PublicKeyCredentialRequestOptions (JSON-serializable)
+
+class WebAuthnLoginRequest(BaseModel):
+    credential: dict       # PublicKeyCredential from navigator.credentials.get()
+
+class WebAuthnLoginOut(BaseModel):
+    message: str
+    email: str
+    requires_password: bool = False  # True if keychain missing; frontend should ask for master password
+
 class ImportResult(BaseModel):
     imported: int
     skipped: int
