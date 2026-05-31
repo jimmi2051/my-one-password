@@ -233,8 +233,9 @@ export function UnlockPage() {
           <button
             onClick={() => { setStage('setup-password'); setError('') }}
             className="text-xs text-gray-400 hover:text-gray-600"
+            title="Only for brand new accounts that have never set a master password"
           >
-            First time? Set up master password
+            New account? Set up master password
           </button>
         </div>
       </div>
@@ -273,7 +274,7 @@ export function UnlockPage() {
   }
 
   if (stage === 'setup-password') {
-    return card('🔑', 'Set Master Password', "Create a master password to encrypt your vault. You'll need this to unlock the app.", (
+    return card('🔑', 'Set Master Password', "Creating a new account? Set a master password to encrypt your vault.", (
       <form onSubmit={handleSetup} className="space-y-4">
         <input
           type="password"
@@ -291,6 +292,13 @@ export function UnlockPage() {
           className="w-full bg-blue-600 text-white py-3 rounded-xl font-medium hover:bg-blue-700 transition disabled:opacity-50"
         >
           {loading ? 'Setting up…' : 'Set password & unlock'}
+        </button>
+        <button
+          type="button"
+          onClick={() => { setStage('password-form'); setError('') }}
+          className="w-full text-gray-500 hover:text-gray-700 py-2 text-sm"
+        >
+          ← Already have a password? Use it instead
         </button>
       </form>
     ))
