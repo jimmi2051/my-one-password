@@ -48,5 +48,7 @@ class WebAuthnCredential(Base):
     credential_id: Mapped[str] = mapped_column(String, unique=True, nullable=False)  # base64url
     public_key: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)           # COSE-encoded
     sign_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Vault key encrypted with server-side wrapping key (AES-GCM); replaces macOS Keychain dependency
+    encrypted_vault_key: Mapped[str | None] = mapped_column(String, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     user: Mapped["UserProfile"] = relationship("UserProfile", back_populates="webauthn_credentials")

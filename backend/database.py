@@ -28,5 +28,15 @@ def get_db():
         db.close()
 
 def init_db():
-    from models import VaultEntry, Category, UserProfile  # noqa
+    from models import VaultEntry, Category, UserProfile, WebAuthnCredential  # noqa
     Base.metadata.create_all(bind=engine)
+    # Migrate: add encrypted_vault_key column if it doesn't exist yet
+    with engine.connect() as conn:
+        from sqlalchemy import text
+        try:
+            conn.execute(text(
+                "ALTER TABLE webauthn_credentials ADD COLUMN encrypted_vault_key TEXT"
+            ))
+            conn.commit()
+        except Exception:
+            pass  # Column already exists
