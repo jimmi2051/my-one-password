@@ -71,26 +71,24 @@ export function VaultPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-30">
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center justify-between gap-3">
+          {/* Logo */}
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-2xl">🔐</span>
             <h1 className="text-lg sm:text-xl font-bold text-gray-900">One Password</h1>
           </div>
 
-          {/* Desktop search */}
-          <div className="hidden sm:flex flex-1 max-w-xs">
+          {/* Right-side actions */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* Desktop search */}
             <input
               type="text"
               value={search}
               onChange={e => handleSearch(e.target.value)}
               placeholder="Search passwords..."
-              className="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="hidden sm:block border border-gray-300 rounded-xl px-4 py-2 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
 
-          <div className="flex-1 sm:hidden" />
-
-          <div className="flex items-center gap-1 sm:gap-2">
             {/* Mobile search toggle */}
             <button
               onClick={() => setMobileSearchOpen(s => !s)}
@@ -104,8 +102,8 @@ export function VaultPage() {
               onClick={() => setEditEntry(null)}
               className="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition flex items-center gap-1"
             >
-              <span>+</span>
-              <span className="hidden sm:inline">Add</span>
+              <span className="hidden sm:inline">+ Add</span>
+              <span className="sm:hidden">+</span>
             </button>
 
             <button
