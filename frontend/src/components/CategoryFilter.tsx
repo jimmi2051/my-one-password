@@ -96,10 +96,10 @@ export function CategoryFilter({ selectedId, onSelect }: Props) {
               >
                 📁 {cat.name}
               </button>
-              <div className="opacity-0 group-hover:opacity-100 flex transition">
+              <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 flex transition shrink-0">
                 <button
                   onClick={() => startEdit(cat.id, cat.name)}
-                  className="text-gray-400 hover:text-blue-600 px-1.5 text-xs"
+                  className="text-gray-400 hover:text-blue-600 p-1.5 text-xs rounded-lg hover:bg-blue-50 transition"
                   title="Rename"
                 >
                   ✏️
@@ -110,7 +110,7 @@ export function CategoryFilter({ selectedId, onSelect }: Props) {
                     await deleteCat.mutateAsync(cat.id)
                     if (selectedId === cat.id) onSelect(undefined)
                   }}
-                  className="text-red-400 hover:text-red-600 px-1.5 text-xs"
+                  className="text-red-400 hover:text-red-600 p-1.5 text-xs rounded-lg hover:bg-red-50 transition"
                   title="Delete"
                 >
                   ✕

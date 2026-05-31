@@ -40,9 +40,9 @@ export function EntryCard({ entry, onEdit }: Props) {
             )}
           </div>
         </div>
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition">
-          <button onClick={() => onEdit(entry)} className="text-blue-500 hover:text-blue-700 text-sm px-2 py-1">Edit</button>
-          <button onClick={handleDelete} className="text-red-400 hover:text-red-600 text-sm px-2 py-1">Delete</button>
+        <div className="flex gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+          <button onClick={() => onEdit(entry)} className="text-blue-500 hover:text-blue-700 text-sm px-2 py-1.5 rounded-lg hover:bg-blue-50 transition">Edit</button>
+          <button onClick={handleDelete} className="text-red-400 hover:text-red-600 text-sm px-2 py-1.5 rounded-lg hover:bg-red-50 transition">Delete</button>
         </div>
       </div>
 
