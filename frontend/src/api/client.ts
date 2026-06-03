@@ -102,3 +102,7 @@ export const vaultApi = {
     return api.post<ImportResult>('/api/import', form)
   },
 }
+
+export const extensionApi = {
+  downloadUrl: () => `${API_BASE}/api/extension/download`,
+}

@@ -8,6 +8,7 @@ import { EntryList } from '../components/EntryList'
 import { EntryForm } from '../components/EntryForm'
 import { PasswordGenerator } from '../components/PasswordGenerator'
 import { ExportImport } from '../components/ExportImport'
+import { ExtensionInstall } from '../components/ExtensionInstall'
 
 type SortOption = 'title-asc' | 'title-desc' | 'created-new' | 'created-old' | 'updated-new'
 
@@ -106,6 +107,7 @@ export function VaultPage() {
               <span className="sm:hidden">+</span>
             </button>
 
+            <ExtensionInstall />
             <button
               onClick={() => setRightPanel(rightPanel === 'generator' ? null : 'generator')}
               className={`hidden sm:block px-3 py-2 rounded-xl text-sm transition ${rightPanel === 'generator' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 hover:bg-gray-200'}`}
@@ -303,6 +305,7 @@ export function VaultPage() {
             </div>
 
             <div className="border-t p-3 space-y-1">
+              <ExtensionInstall onOpen={() => setMobileDrawerOpen(false)} />
               <button
                 onClick={() => { setMobileDrawerOpen(false); setRightPanel(rightPanel === 'generator' ? null : 'generator') }}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-gray-700 hover:bg-gray-100 active:bg-gray-200 transition text-left"
