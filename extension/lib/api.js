@@ -10,7 +10,7 @@
 (function () {
   "use strict";
 
-  const DEFAULT_BASE_URL = "http://localhost:8000";
+  const DEFAULT_BASE_URL = "https://jimmi2051-ideapad-l340-15irh-gaming.tailcd88c1.ts.net";
 
   /** Read the configured API base URL from chrome.storage.local. */
   async function getBaseUrl() {

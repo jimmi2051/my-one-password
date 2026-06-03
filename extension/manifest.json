@@ -30,6 +30,5 @@
       "css": ["content-script.css"],
       "run_at": "document_idle"
     }
-  ],
-  "key": "REPLACE_ME_Generate_a_key_with_openssl_rand_-base64_32_see_README"
+  ]
 }
