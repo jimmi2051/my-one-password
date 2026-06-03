@@ -10,7 +10,7 @@
   ],
   "host_permissions": [
     "https://*/*",
-    "http://localhost:8000"
+    "http://localhost:8000/*"
   ],
   "action": {
     "default_popup": "popup/popup.html",
