@@ -7,7 +7,13 @@ from fastapi.responses import StreamingResponse
 
 router = APIRouter(prefix="/api/extension", tags=["extension"])
 
-EXTENSION_DIR = Path(__file__).resolve().parent.parent.parent / "extension"
+# Inside Docker: /app/routers/extension.py → /app/extension
+# On host:        backend/routers/extension.py → ../extension
+_APP_DIR = Path(__file__).resolve().parent.parent
+EXTENSION_DIR = _APP_DIR / "extension"
+# Fallback if extension lives next to backend dir (dev / non-Docker)
+if not EXTENSION_DIR.is_dir():
+    EXTENSION_DIR = _APP_DIR.parent / "extension"
 
 # Files/patterns to exclude from the downloadable zip
 EXCLUDE_PATTERNS = {".DS_Store", "Thumbs.db", "__pycache__", "node_modules"}

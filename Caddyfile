@@ -1,0 +1,31 @@
+{
+    auto_https disable_redirects
+}
+
+jimmi2051-ideapad-l340-15irh-gaming.tailcd88c1.ts.net {
+    tls /etc/ssl/tailscale/ts.crt /etc/ssl/tailscale/ts.key
+
+    # Backend routes
+    handle /api/* {
+        reverse_proxy localhost:8000
+    }
+    handle /auth/* {
+        reverse_proxy localhost:8000
+    }
+    handle /health {
+        reverse_proxy localhost:8000
+    }
+    handle /docs* {
+        reverse_proxy localhost:8000
+    }
+
+    # Frontend — everything else
+    handle {
+        reverse_proxy localhost:5173
+    }
+}
+
+admin-tnt.com {
+      tls /etc/ssl/tailscale/admin-tnt.crt /etc/ssl/tailscale/admin-tnt.key
+      reverse_proxy localhost:3008
+}
