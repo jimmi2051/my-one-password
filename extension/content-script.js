@@ -323,7 +323,13 @@ async function lookupAndShow(field) {
   try {
     const hostname = window.location.hostname.replace(/^www\./, "").toLowerCase();
     const response = await sendToSw({ type: "AUTOFILL_LOOKUP", hostname });
-    console.log("[1PW] SW response:", JSON.stringify(response));
+    console.log("[1PW] SW response:", JSON.stringify(response, (key, value) => {
+      if (key === "password") return "***REDACTED***";
+      if (key === "entries" && Array.isArray(value)) {
+        return value.map(e => ({...e, password: "***REDACTED***"}));
+      }
+      return value;
+    }));
 
     if (response && response.locked) {
       console.log("[1PW] Vault is locked — unlock via popup first");
