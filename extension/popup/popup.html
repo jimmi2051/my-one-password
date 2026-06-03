@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My One Password</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- ── Locked state ──────────────────────────────────────────────────── -->
+  <div id="locked-state" class="state-overlay">
+    <div id="unlock-content" class="unlock-content">
+      <div class="lock-icon">🔐</div>
+      <h2>My One Password</h2>
+      <p id="unlock-message" class="unlock-message">Unlock to access your vault</p>
+      <button id="unlock-btn" class="btn btn-primary">Unlock with Touch ID</button>
+      <button id="sign-in-btn" class="btn btn-secondary" style="display:none;">Sign In</button>
+      <p id="unlock-error" class="error-text" style="display:none;"></p>
+    </div>
+    <div id="loading-content" class="loading-content" style="display:none;">
+      <div class="spinner"></div>
+      <p class="spinner-label">Unlocking...</p>
+    </div>
+  </div>
+
+  <!-- ── Vault state (unlocked) ────────────────────────────────────────── -->
+  <div id="vault-state" class="vault-state" style="display:none;">
+    <div class="header">
+      <div class="search-wrapper">
+        <input
+          type="text"
+          id="search-input"
+          class="search-input"
+          placeholder="Search entries..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <div id="entry-list" class="entry-list" role="listbox"></div>
+    <div id="empty-state" class="empty-state" style="display:none;">
+      <p class="empty-text">No matching entries</p>
+    </div>
+  </div>
+
+  <!-- ── Toast notification ────────────────────────────────────────────── -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

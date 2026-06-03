@@ -7,7 +7,7 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from database import init_db
 from vault_store import vault_store
-from config import FRONTEND_URL
+from config import FRONTEND_URL, EXTENSION_ORIGINS
 from routers import auth, entries, categories, generator, vault, webauthn
 
 
@@ -31,9 +31,13 @@ app = FastAPI(title="One Password", version="1.0.0", lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+allowed_origins = [FRONTEND_URL, "http://localhost:5173", "http://localhost:5174"]
+if EXTENSION_ORIGINS:
+    allowed_origins.extend(EXTENSION_ORIGINS.split(","))
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[FRONTEND_URL, "http://localhost:5173", "http://localhost:5174"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

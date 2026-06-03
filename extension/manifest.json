@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "My One Password",
+  "version": "1.0.0",
+  "description": "Autofill passwords from your My One Password vault",
+  "permissions": [
+    "storage",
+    "cookies",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://localhost:8000"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*/*"],
+      "js": ["content-script.js"],
+      "css": ["content-script.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "key": "REPLACE_ME_Generate_a_key_with_openssl_rand_-base64_32_see_README"
+}

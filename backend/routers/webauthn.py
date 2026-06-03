@@ -30,7 +30,7 @@ from schemas import (
 from dependencies import get_current_user, get_jti
 from vault_store import vault_store
 from crypto import encrypt_key, decrypt_key
-from config import WEBAUTHN_RP_ID, WEBAUTHN_RP_NAME, WEBAUTHN_ORIGIN, JWT_SECRET
+from config import WEBAUTHN_RP_ID, WEBAUTHN_RP_NAME, WEBAUTHN_ORIGINS, JWT_SECRET
 
 router = APIRouter()
 
@@ -127,16 +127,22 @@ async def register(
         )
 
     challenge = _pop_challenge(jti)
-    try:
-        verified = webauthn.verify_registration_response(
-            credential=body.credential,
-            expected_challenge=challenge,
-            expected_rp_id=WEBAUTHN_RP_ID,
-            expected_origin=WEBAUTHN_ORIGIN,
-            require_user_verification=True,
-        )
-    except InvalidRegistrationResponse as e:
-        raise HTTPException(status_code=400, detail=f"Registration failed: {e}")
+    last_error = None
+    for origin in WEBAUTHN_ORIGINS:
+        try:
+            verified = webauthn.verify_registration_response(
+                credential=body.credential,
+                expected_challenge=challenge,
+                expected_rp_id=WEBAUTHN_RP_ID,
+                expected_origin=origin,
+                require_user_verification=True,
+            )
+            last_error = None
+            break
+        except InvalidRegistrationResponse as e:
+            last_error = e
+    if last_error is not None:
+        raise HTTPException(status_code=400, detail=f"Registration failed: {last_error}")
 
     credential_id_b64 = bytes_to_base64url(verified.credential_id)
     encrypted_vault_key = encrypt_key(bytes(vault_key), _get_server_wrapping_key())
@@ -210,15 +216,24 @@ async def login(
         raise HTTPException(status_code=400, detail="Unknown credential")
 
     try:
-        verified = webauthn.verify_authentication_response(
-            credential=body.credential,
-            expected_challenge=challenge,
-            expected_rp_id=WEBAUTHN_RP_ID,
-            expected_origin=WEBAUTHN_ORIGIN,
-            credential_public_key=cred_row.public_key,
-            credential_current_sign_count=cred_row.sign_count,
-            require_user_verification=True,
-        )
+        last_error = None
+        for origin in WEBAUTHN_ORIGINS:
+            try:
+                verified = webauthn.verify_authentication_response(
+                    credential=body.credential,
+                    expected_challenge=challenge,
+                    expected_rp_id=WEBAUTHN_RP_ID,
+                    expected_origin=origin,
+                    credential_public_key=cred_row.public_key,
+                    credential_current_sign_count=cred_row.sign_count,
+                    require_user_verification=True,
+                )
+                last_error = None
+                break
+            except InvalidAuthenticationResponse as e:
+                last_error = e
+        if last_error is not None:
+            raise last_error
     except InvalidAuthenticationResponse as e:
         raise HTTPException(status_code=401, detail=f"Touch ID verification failed: {e}")
 

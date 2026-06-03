@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
+from urllib.parse import urlparse
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from database import get_db
 from models import VaultEntry, Category
@@ -140,3 +141,49 @@ async def delete_entry(
         raise HTTPException(status_code=404, detail="Entry not found")
     db.delete(entry)
     db.commit()
+
+
+def _strip_www(hostname: str) -> str:
+    return hostname.removeprefix("www.")
+
+
+@router.get("/entries/autofill")
+async def autofill_entries(
+    url: str = Query(..., description="Hostname to match (e.g., github.com)"),
+    db: Session = Depends(get_db),
+    vault_key: bytes = Depends(get_vault_key),
+    user: UserProfile = Depends(get_current_user),
+):
+    """Return vault entries whose URL hostname matches the query param."""
+    query_hostname = _strip_www(url.lower())
+
+    # Only fetch entries with non-null URL (no encrypted content matching possible)
+    entries = (
+        db.query(VaultEntry)
+        .filter(
+            VaultEntry.user_id == user.id,
+            VaultEntry.url.isnot(None),
+        )
+        .order_by(VaultEntry.title)
+        .all()
+    )
+
+    result = []
+    for entry in entries:
+        decrypted_url = decrypt(entry.url, vault_key)
+        if not decrypted_url:
+            continue
+        try:
+            entry_hostname = _strip_www(urlparse(decrypted_url).hostname or "")
+        except Exception:
+            continue
+        if entry_hostname == query_hostname:
+            result.append({
+                "id": entry.id,
+                "title": decrypt(entry.title, vault_key),
+                "username": decrypt(entry.username, vault_key) if entry.username else None,
+                "password": decrypt(entry.password, vault_key),
+                "url": decrypted_url,
+            })
+
+    return result

@@ -3,13 +3,13 @@ services:
     build:
       context: ./backend
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     env_file:
       - .env
     environment:
       # Override .env values that differ inside Docker
       DB_PATH: /app/data/vault.db
-      FRONTEND_URL: http://localhost:5173
+      FRONTEND_URL: https://jimmi2051-ideapad-l340-15irh-gaming.tailcd88c1.ts.net
       PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
     volumes:
       - vault-data:/app/data

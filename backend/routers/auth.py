@@ -81,15 +81,16 @@ async def auth_callback(
         db.refresh(user)
 
     token, jti = create_token(google_sub, email)
-    from config import FRONTEND_URL
-    _secure = FRONTEND_URL.startswith("https://")
+    from config import FRONTEND_URL, SAMESITE_POLICY
+    samesite = SAMESITE_POLICY
+    secure = samesite == "none" or FRONTEND_URL.startswith("https://")
     redirect = RedirectResponse(url=f"{FRONTEND_URL}/unlock", status_code=302)
     redirect.set_cookie(
         key="session_token",
         value=token,
         httponly=True,
-        samesite="lax",
-        secure=_secure,
+        samesite=samesite,
+        secure=secure,
         path="/",
         max_age=86400,
     )

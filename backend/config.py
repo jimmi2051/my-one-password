@@ -35,3 +35,15 @@ ARGON2_HASH_LEN = 32
 
 # Vault key TTL in seconds (30 minutes sliding window)
 VAULT_KEY_TTL = 1800
+
+# SameSite policy for session cookie
+SAMESITE_POLICY: str = os.getenv("SAMESITE_POLICY", "lax")  # "lax" | "none" | "strict"
+
+# WebAuthn / Touch ID — list of acceptable origins (for extension support)
+WEBAUTHN_ORIGINS: list[str] = os.getenv(
+    "WEBAUTHN_ORIGINS",
+    os.getenv("WEBAUTHN_ORIGIN", FRONTEND_URL)  # fallback to legacy single-origin
+).split(",")
+
+# CORS origins for Chrome extension (comma-separated, empty by default)
+EXTENSION_ORIGINS: str = os.getenv("EXTENSION_ORIGINS", "")
