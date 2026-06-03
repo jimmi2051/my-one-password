@@ -310,28 +310,36 @@ function detectLoginFormInline() {
  * @param {HTMLInputElement} field — the focused field
  */
 async function lookupAndShow(field) {
-  // Fast path: don't bother looking up non-text fields
   const t = (field.type || "").toLowerCase();
   if (t !== "text" && t !== "email" && t !== "password") return;
 
-  // Detect a login form on the page
   const form = detectLoginForm();
-  if (!form) return; // no complete login form → AC8 silent
+  if (!form) {
+    console.log("[1PW] No login form detected on this page");
+    return;
+  }
+  console.log("[1PW] Login form detected — looking up entries...");
 
   try {
     const hostname = window.location.hostname.replace(/^www\./, "").toLowerCase();
     const response = await sendToSw({ type: "AUTOFILL_LOOKUP", hostname });
+    console.log("[1PW] SW response:", JSON.stringify(response));
 
     if (response && response.locked) {
-      // Vault locked — silent (user unlocks via popup)
+      console.log("[1PW] Vault is locked — unlock via popup first");
+      return;
+    }
+
+    if (response && response.error) {
+      console.log("[1PW] Lookup error:", response.error, response.message);
       return;
     }
 
     const entries = (response && response.entries) || [];
+    console.log("[1PW] Found", entries.length, "matching entries for", hostname);
     showDropdown(field, entries);
   } catch (err) {
-    // Network error or extension context invalidated — degrade silently
-    console.debug("[1PW] Autofill lookup failed:", err.message);
+    console.log("[1PW] Autofill lookup failed:", err.message);
   }
 }
 

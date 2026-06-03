@@ -180,11 +180,17 @@ async function handleFetch(message, _sender, sendResponse) {
  */
 async function handleAutofillLookup(message, _sender, sendResponse) {
   try {
+    console.log("[1PW SW] AUTOFILL_LOOKUP for hostname:", message.hostname);
+
     // Verify unlock state
     const state = await loadState();
+    console.log("[1PW SW] Current state:", JSON.stringify(state));
     if (!state || !state.unlocked) {
+      console.log("[1PW SW] State shows locked, checking /auth/me...");
       const status = await ExtensionApi.checkStatus();
+      console.log("[1PW SW] /auth/me response:", JSON.stringify(status));
       if (!status.unlocked) {
+        console.log("[1PW SW] Vault is locked — telling content script");
         sendResponse({ locked: true });
         return;
       }
@@ -192,14 +198,16 @@ async function handleAutofillLookup(message, _sender, sendResponse) {
     }
 
     await updateActivity();
+    console.log("[1PW SW] Calling autofillLookup API...");
     const entries = await ExtensionApi.autofillLookup(message.hostname);
+    console.log("[1PW SW] API returned", entries.length, "entries");
     sendResponse({ entries });
   } catch (err) {
+    console.error("[1PW SW] AUTOFILL_LOOKUP error:", err);
     if (err.message === "locked") {
       await markLocked();
       sendResponse({ locked: true });
     } else {
-      console.error("[1PW] AUTOFILL_LOOKUP error:", err);
       sendResponse({ error: "network", message: err.message });
     }
   }
