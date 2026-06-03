@@ -15,7 +15,7 @@ from webauthn.helpers.structs import (
 )
 from webauthn.helpers.exceptions import InvalidRegistrationResponse, InvalidAuthenticationResponse
 from webauthn import options_to_json
-from webauthn.helpers import bytes_to_base64url
+from webauthn.helpers import bytes_to_base64url, base64url_to_bytes
 
 from database import get_db
 from models import UserProfile, WebAuthnCredential
@@ -42,6 +42,36 @@ _challenges: dict[str, tuple[bytes, float]] = {}
 def _get_server_wrapping_key() -> bytes:
     """Derive a 32-byte AES key from JWT_SECRET for wrapping vault keys stored in DB."""
     return hashlib.sha256(JWT_SECRET.encode() + b":webauthn-vault-wrap").digest()
+
+
+def _extract_origin(credential: dict) -> str | None:
+    """Extract the origin from a WebAuthn credential's clientDataJSON.
+
+    Returns the origin string (e.g. 'chrome-extension://abc123') or None
+    if the clientDataJSON cannot be decoded / parsed.
+    """
+    try:
+        cdata_b64 = credential.get("response", {}).get("clientDataJSON", "")
+        cdata_bytes = base64url_to_bytes(cdata_b64)
+        cdata = json.loads(cdata_bytes.decode("utf-8"))
+        return cdata.get("origin")
+    except Exception:
+        return None
+
+
+def _build_allowed_origins(credential: dict) -> list[str]:
+    """Return the list of acceptable origins for WebAuthn verification.
+
+    Starts with the statically configured WEBAUTHN_ORIGINS and
+    automatically appends the credential's actual origin when it is a
+    Chrome extension (chrome-extension://…) so that the popup-based
+    Touch ID flow works without manual configuration of extension IDs.
+    """
+    origins = list(WEBAUTHN_ORIGINS)  # copy
+    actual = _extract_origin(credential)
+    if actual and actual.startswith("chrome-extension://"):
+        origins.append(actual)
+    return origins
 
 
 def _store_challenge(jti: str, challenge: bytes) -> None:
@@ -128,7 +158,7 @@ async def register(
 
     challenge = _pop_challenge(jti)
     last_error = None
-    for origin in WEBAUTHN_ORIGINS:
+    for origin in _build_allowed_origins(body.credential):
         try:
             verified = webauthn.verify_registration_response(
                 credential=body.credential,
@@ -217,7 +247,7 @@ async def login(
 
     try:
         last_error = None
-        for origin in WEBAUTHN_ORIGINS:
+        for origin in _build_allowed_origins(body.credential):
             try:
                 verified = webauthn.verify_authentication_response(
                     credential=body.credential,

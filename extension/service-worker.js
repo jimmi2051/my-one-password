@@ -147,7 +147,12 @@ async function handleFetch(message, _sender, sendResponse) {
 
     if (res.status === 401) {
       await markLocked();
-      sendResponse({ error: "locked", status: 401 });
+      let detail = "locked";
+      try {
+        const err = await res.json();
+        if (err.detail) detail = err.detail;
+      } catch (_) {}
+      sendResponse({ error: detail, status: 401 });
       return;
     }
 
