@@ -1,15 +1,15 @@
 /**
  * content-script.js — Form detection, inline dropdown, and autofill.
  *
- * Injected into every page (MV3 content_scripts with matches: ["https://*/*"]).
+ * Injected into every page (MV3 content_scripts matches all HTTPS URLs).
  * Detects login forms, shows an inline dropdown near focused fields, and fills
  * credentials via native DOM setters (compatible with React/Vue/Angular).
  *
- * Message protocol (content-script ↔ service worker):
+ * Message protocol (content-script <-> service worker):
  *   Request:  { type: "AUTOFILL_LOOKUP", hostname: "github.com" }
- *   Response: { type: "AUTOFILL_RESULT", entries: [{id,title,username,password,url}] }
- *             { type: "AUTOFILL_RESULT", entries: [] }       // no match → silent (AC8)
- *             { type: "AUTOFILL_RESULT", locked: true }      // vault locked
+ *   Response: { type: "AUTOFILL_RESULT", entries: [...] }
+ *             { type: "AUTOFILL_RESULT", entries: [] }    — no match, silent (AC8)
+ *             { type: "AUTOFILL_RESULT", locked: true }   — vault locked
  *
  * Architecture:
  *   - form-detector.js: heuristic password-field discovery + MutationObserver
