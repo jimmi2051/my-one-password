@@ -173,9 +173,14 @@ async def autofill_entries(
         decrypted_url = decrypt(entry.url, vault_key)
         if not decrypted_url:
             continue
+        # Normalise: add https:// if missing (urlparse needs a scheme)
+        if "://" not in decrypted_url:
+            decrypted_url = "https://" + decrypted_url
         try:
             entry_hostname = _strip_www(urlparse(decrypted_url).hostname or "")
         except Exception:
+            continue
+        if not entry_hostname:
             continue
         if entry_hostname == query_hostname:
             result.append({
