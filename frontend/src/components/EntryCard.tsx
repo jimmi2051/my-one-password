@@ -24,19 +24,19 @@ export function EntryCard({ entry, onEdit }: Props) {
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-4 hover:shadow-md transition group">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between mb-3 gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           {favicon ? (
-            <img src={favicon} alt="" className="w-6 h-6 rounded" onError={e => (e.currentTarget.style.display='none')} />
+            <img src={favicon} alt="" className="w-6 h-6 rounded shrink-0" onError={e => (e.currentTarget.style.display='none')} />
           ) : (
-            <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-purple-500 rounded flex items-center justify-center text-white text-xs font-bold">
+            <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-purple-500 rounded flex items-center justify-center text-white text-xs font-bold shrink-0">
               {entry.title[0]?.toUpperCase()}
             </div>
           )}
-          <div>
-            <h3 className="font-semibold text-gray-900">{entry.title}</h3>
+          <div className="min-w-0">
+            <h3 className="font-semibold text-gray-900 truncate">{entry.title}</h3>
             {entry.category_name && (
-              <span className="text-xs text-gray-400">{entry.category_name}</span>
+              <span className="text-xs text-gray-400 truncate block">{entry.category_name}</span>
             )}
           </div>
         </div>
@@ -48,10 +48,10 @@ export function EntryCard({ entry, onEdit }: Props) {
 
       <div className="space-y-2">
         {entry.username && (
-          <div className="flex items-center justify-between">
-            <div>
+          <div className="flex items-center justify-between gap-1">
+            <div className="min-w-0">
               <div className="text-xs text-gray-500">Username</div>
-              <div className="text-sm text-gray-700">{entry.username}</div>
+              <div className="text-sm text-gray-700 truncate">{entry.username}</div>
             </div>
             <button
               onClick={() => copyUsername(entry.username!)}
@@ -62,10 +62,10 @@ export function EntryCard({ entry, onEdit }: Props) {
           </div>
         )}
 
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex items-center justify-between gap-1">
+          <div className="min-w-0">
             <div className="text-xs text-gray-500">Password</div>
-            <div className="text-sm font-mono text-gray-700">
+            <div className="text-sm font-mono text-gray-700 truncate">
               {showPassword ? entry.password : '••••••••••••'}
             </div>
           </div>
