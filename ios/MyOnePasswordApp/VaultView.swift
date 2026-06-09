@@ -145,7 +145,14 @@ struct VaultView: View {
                     await viewModel.refresh()
                 }
             }
-            .confirmationDialog("Delete this vault entry?", item: $deletingEntry) { entry in
+            .confirmationDialog(
+                "Delete this vault entry?",
+                isPresented: Binding(
+                    get: { deletingEntry != nil },
+                    set: { if !$0 { deletingEntry = nil } }
+                ),
+                presenting: deletingEntry
+            ) { entry in
                 Button("Delete \(entry.title)", role: .destructive) {
                     Task { await viewModel.deleteEntry(entry) }
                 }

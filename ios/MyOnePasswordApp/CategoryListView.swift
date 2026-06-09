@@ -74,7 +74,14 @@ struct CategoryListView: View {
                     }
                 }
             }
-            .confirmationDialog("Delete category?", item: $pendingDelete) { category in
+            .confirmationDialog(
+                "Delete category?",
+                isPresented: Binding(
+                    get: { pendingDelete != nil },
+                    set: { if !$0 { pendingDelete = nil } }
+                ),
+                presenting: pendingDelete
+            ) { category in
                 Button("Delete \(category.name)", role: .destructive) {
                     Task { await deleteCategory(category) }
                 }
