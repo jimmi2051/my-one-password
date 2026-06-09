@@ -34,7 +34,7 @@ final class KeychainStore {
         guard let access = SecAccessControlCreateWithFlags(
             nil,
             kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-            [.biometryCurrentSet, .userPresence],
+            .userPresence,
             &error
         ) else {
             throw error?.takeRetainedValue() ?? KeychainError.encodingFailed
