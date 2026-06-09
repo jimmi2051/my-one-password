@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct EntryEditorView: View {
     @Environment(\.dismiss) private var dismiss
@@ -15,6 +16,10 @@ struct EntryEditorView: View {
     @State private var categoryId: String
     @State private var length = 20.0
     @State private var includeSymbols = false
+    @State private var isPasswordVisible = false
+    @State private var isGenerating = false
+    @State private var isSaving = false
+    @State private var copiedField: String?
     @State private var errorMessage: String?
 
     init(entry: VaultEntry?, categories: [Category], onSave: @escaping () async -> Void) {
@@ -34,15 +39,18 @@ struct EntryEditorView: View {
             Form {
                 Section {
                     TextField("Title", text: $title)
-                    TextField("Username", text: $username)
-                        .textContentType(.username)
-                    SecureField("Password", text: $password)
-                        .textContentType(.password)
-                    TextField("URL", text: $url)
-                        .keyboardType(.URL)
+                        .textContentType(.name)
+                    copyableField("Username", text: $username, systemImage: "person.crop.circle", contentType: .username)
+                    passwordField
+                    copyableField("Website", text: $url, systemImage: "link", keyboard: .URL)
                         .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                     TextField("Notes", text: $notes, axis: .vertical)
-                        .lineLimit(3...8)
+                        .lineLimit(4...10)
+                } header: {
+                    Text("Credential")
+                } footer: {
+                    Text("Password values are only shown in this unlocked editor and are never persisted locally.")
                 }
 
                 Section("Category") {
@@ -56,22 +64,39 @@ struct EntryEditorView: View {
 
                 Section("Password Generator") {
                     Stepper("Length: \(Int(length))", value: $length, in: 8...64, step: 1)
-                    Toggle("Symbols", isOn: $includeSymbols)
-                    Button("Generate Password") {
+                    Toggle("Include symbols", isOn: $includeSymbols)
+                    Button {
                         Task { await generatePassword() }
+                    } label: {
+                        HStack {
+                            if isGenerating {
+                                ProgressView()
+                            } else {
+                                Image(systemName: "sparkles")
+                            }
+                            Text(isGenerating ? "Generating..." : "Generate Password")
+                        }
                     }
+                    .disabled(isGenerating)
                 }
             }
             .navigationTitle(entry == nil ? "New Entry" : "Edit Entry")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .disabled(isSaving)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
+                    Button {
                         Task { await save() }
+                    } label: {
+                        if isSaving {
+                            ProgressView()
+                        } else {
+                            Text("Save")
+                        }
                     }
-                    .disabled(title.isEmpty || password.isEmpty)
+                    .disabled(title.isEmpty || password.isEmpty || isSaving)
                 }
             }
             .alert("Entry", isPresented: Binding(
@@ -85,17 +110,92 @@ struct EntryEditorView: View {
         }
     }
 
+    private var passwordField: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "key.fill")
+                .foregroundStyle(.secondary)
+            Group {
+                if isPasswordVisible {
+                    TextField("Password", text: $password)
+                        .textContentType(.password)
+                } else {
+                    SecureField("Password", text: $password)
+                        .textContentType(.password)
+                }
+            }
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+
+            Button {
+                isPasswordVisible.toggle()
+            } label: {
+                Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
+            }
+            .buttonStyle(.borderless)
+
+            Button {
+                copy(password, label: "password")
+            } label: {
+                Image(systemName: copiedField == "password" ? "checkmark" : "doc.on.doc")
+            }
+            .buttonStyle(.borderless)
+            .disabled(password.isEmpty)
+        }
+    }
+
+    private func copyableField(
+        _ placeholder: String,
+        text: Binding<String>,
+        systemImage: String,
+        keyboard: UIKeyboardType = .default,
+        contentType: UITextContentType? = nil
+    ) -> some View {
+        HStack(spacing: 10) {
+            Image(systemName: systemImage)
+                .foregroundStyle(.secondary)
+            TextField(placeholder, text: text)
+                .keyboardType(keyboard)
+                .textContentType(contentType)
+            Button {
+                copy(text.wrappedValue, label: placeholder.lowercased())
+            } label: {
+                Image(systemName: copiedField == placeholder.lowercased() ? "checkmark" : "doc.on.doc")
+            }
+            .buttonStyle(.borderless)
+            .disabled(text.wrappedValue.isEmpty)
+        }
+    }
+
+    private func copy(_ value: String, label: String) {
+        guard !value.isEmpty else { return }
+        UIPasteboard.general.string = value
+        copiedField = label
+        Task {
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            await MainActor.run {
+                if copiedField == label {
+                    copiedField = nil
+                }
+            }
+        }
+    }
+
     private func generatePassword() async {
+        isGenerating = true
+        defer { isGenerating = false }
         do {
             password = try await APIClient.shared.generatePassword(
                 PasswordGenerateRequest(length: Int(length), symbols: includeSymbols)
             )
+            isPasswordVisible = true
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 
     private func save() async {
+        isSaving = true
+        defer { isSaving = false }
         let payload = EntryPayload(
             title: title,
             username: username.nilIfEmpty,

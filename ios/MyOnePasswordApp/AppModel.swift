@@ -13,6 +13,7 @@ final class AppModel: NSObject, ObservableObject {
 
     @Published private(set) var state: State = .loading
     @Published var errorMessage: String?
+    @Published var isSigningIn = false
 
     private var authSession: ASWebAuthenticationSession?
 
@@ -27,11 +28,13 @@ final class AppModel: NSObject, ObservableObject {
     }
 
     func signInWithGoogle() {
+        isSigningIn = true
         let session = ASWebAuthenticationSession(
             url: APIClient.shared.makeGoogleLoginURL(),
             callbackURLScheme: AppConfiguration.callbackScheme
         ) { [weak self] callbackURL, error in
             Task { @MainActor in
+                self?.isSigningIn = false
                 if let error {
                     self?.errorMessage = error.localizedDescription
                     return
@@ -50,6 +53,7 @@ final class AppModel: NSObject, ObservableObject {
     }
 
     func handleCallback(_ url: URL) {
+        isSigningIn = false
         guard
             url.scheme == AppConfiguration.callbackScheme,
             let components = URLComponents(url: url, resolvingAgainstBaseURL: false),

@@ -19,27 +19,10 @@ final class CredentialProviderViewController: ASCredentialProviderViewController
     }
 
     override func provideCredentialWithoutUserInteraction(for credentialIdentity: ASPasswordCredentialIdentity) {
-        Task {
-            do {
-                guard let recordIdentifier = credentialIdentity.recordIdentifier else {
-                    throw APIError.invalidResponse
-                }
-                let entries = try await APIClient.shared.entries()
-                guard let entry = entries.first(where: { $0.id == recordIdentifier }) else {
-                    throw APIError.invalidResponse
-                }
-                let credential = ASPasswordCredential(
-                    user: entry.username ?? "",
-                    password: entry.password
-                )
-                extensionContext.completeRequest(withSelectedCredential: credential)
-            } catch {
-                extensionContext.cancelRequest(withError: NSError(
-                    domain: ASExtensionErrorDomain,
-                    code: ASExtensionError.userInteractionRequired.rawValue
-                ))
-            }
-        }
+        extensionContext.cancelRequest(withError: NSError(
+            domain: ASExtensionErrorDomain,
+            code: ASExtensionError.userInteractionRequired.rawValue
+        ))
     }
 
     override func prepareInterfaceToProvideCredential(for credentialIdentity: ASPasswordCredentialIdentity) {
