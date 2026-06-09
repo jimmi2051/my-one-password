@@ -33,7 +33,9 @@ final class APIClient {
         self.baseURL = baseURL
         self.urlSession = urlSession
         decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .custom(Self.decodeBackendDate)
+        decoder.dateDecodingStrategy = .custom { decoder in
+            try Self.decodeBackendDate(from: decoder)
+        }
         encoder = JSONEncoder()
     }
 
@@ -156,7 +158,12 @@ final class APIClient {
         let container = try decoder.singleValueContainer()
         let value = try container.decode(String.self)
 
-        for formatter in backendDateFormatters {
+        for format in backendDateFormats {
+            let formatter = DateFormatter()
+            formatter.calendar = Calendar(identifier: .iso8601)
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(secondsFromGMT: 0)
+            formatter.dateFormat = format
             if let date = formatter.date(from: value) {
                 return date
             }
@@ -168,25 +175,14 @@ final class APIClient {
         )
     }
 
-    private static let backendDateFormatters: [DateFormatter] = {
-        let formats = [
-            "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXXXX",
-            "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX",
-            "yyyy-MM-dd'T'HH:mm:ssXXXXX",
-            "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
-            "yyyy-MM-dd'T'HH:mm:ss.SSS",
-            "yyyy-MM-dd'T'HH:mm:ss"
-        ]
-
-        return formats.map { format in
-            let formatter = DateFormatter()
-            formatter.calendar = Calendar(identifier: .iso8601)
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(secondsFromGMT: 0)
-            formatter.dateFormat = format
-            return formatter
-        }
-    }()
+    private static let backendDateFormats = [
+        "yyyy-MM-dd'T'HH:mm:ss.SSSSSSXXXXX",
+        "yyyy-MM-dd'T'HH:mm:ss.SSSXXXXX",
+        "yyyy-MM-dd'T'HH:mm:ssXXXXX",
+        "yyyy-MM-dd'T'HH:mm:ss.SSSSSS",
+        "yyyy-MM-dd'T'HH:mm:ss.SSS",
+        "yyyy-MM-dd'T'HH:mm:ss"
+    ]
 }
 
 struct EmptyResponse: Decodable {}
