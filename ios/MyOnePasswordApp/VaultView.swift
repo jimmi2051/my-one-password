@@ -29,14 +29,13 @@ final class VaultViewModel: ObservableObject {
     @Published var selectedCategoryId: String?
     @Published var isLoading = false
     @Published var errorMessage: String?
-    @Published var autoFillSync = AutoFillSyncSnapshot()
 
     var selectedCategoryName: String {
         guard let selectedCategoryId else { return "All Items" }
         return categories.first(where: { $0.id == selectedCategoryId })?.name ?? "Category"
     }
 
-    func refresh(syncAutoFill: Bool = true) async {
+    func refresh() async {
         isLoading = true
         defer { isLoading = false }
         do {
@@ -44,22 +43,9 @@ final class VaultViewModel: ObservableObject {
             async let categories = APIClient.shared.categories()
             self.entries = try await entries
             self.categories = try await categories
-            if syncAutoFill {
-                await syncAutoFillSuggestions()
-            }
         } catch {
             errorMessage = error.localizedDescription
         }
-    }
-
-    func syncAutoFillSuggestions() async {
-        autoFillSync = AutoFillSyncSnapshot(
-            outcome: .syncing,
-            syncedCredentialCount: autoFillSync.syncedCredentialCount,
-            attemptedAt: autoFillSync.attemptedAt,
-            isProviderEnabled: autoFillSync.isProviderEnabled
-        )
-        autoFillSync = await CredentialIdentitySync.sync(entries: entries)
     }
 
     func deleteEntry(_ entry: VaultEntry) async {
@@ -90,7 +76,6 @@ struct VaultView: View {
                     LazyVStack(spacing: 18) {
                         dashboardHeader
                         categoryScroller
-                        autoFillCard
                         entrySection
                     }
                     .padding(.horizontal, 18)
@@ -119,9 +104,6 @@ struct VaultView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
-                        Button("Sync AutoFill Suggestions") {
-                            Task { await viewModel.syncAutoFillSuggestions() }
-                        }
                         Button("Logout", role: .destructive) {
                             Task { await appModel.logout() }
                         }
@@ -163,7 +145,7 @@ struct VaultView: View {
                 await viewModel.refresh()
             }
             .onChange(of: viewModel.search) {
-                Task { await viewModel.refresh(syncAutoFill: false) }
+                Task { await viewModel.refresh() }
             }
             .alert("Vault", isPresented: Binding(
                 get: { viewModel.errorMessage != nil },
@@ -221,7 +203,7 @@ struct VaultView: View {
         let selected = viewModel.selectedCategoryId == id
         return Button {
             viewModel.selectedCategoryId = id
-            Task { await viewModel.refresh(syncAutoFill: false) }
+            Task { await viewModel.refresh() }
         } label: {
             Text(title)
                 .font(.subheadline.weight(.semibold))
@@ -239,68 +221,6 @@ struct VaultView: View {
                 }
         }
         .buttonStyle(.plain)
-    }
-
-    private var autoFillCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: autoFillIcon)
-                    .font(.title2.weight(.semibold))
-                    .foregroundStyle(autoFillTint)
-                    .frame(width: 34)
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(viewModel.autoFillSync.title)
-                        .font(.headline)
-                    Text(viewModel.autoFillSync.detail)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-            }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Label("Enable Associated Domains, App Groups, and Keychain Sharing for both targets.", systemImage: "checklist")
-                Label("Install on a real device, then enable My One Password in iOS Password AutoFill settings.", systemImage: "iphone")
-                Label("Safari shows suggestions after setup; iOS still requires you to select or approve a credential.", systemImage: "hand.tap")
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
-
-            Button {
-                Task { await viewModel.syncAutoFillSuggestions() }
-            } label: {
-                Label("Sync AutoFill Suggestions", systemImage: "arrow.triangle.2.circlepath")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(viewModel.autoFillSync.outcome == .syncing)
-        }
-        .padding(16)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-    }
-
-    private var autoFillIcon: String {
-        switch viewModel.autoFillSync.outcome {
-        case .notStarted:
-            return "rectangle.and.pencil.and.ellipsis"
-        case .syncing:
-            return "arrow.triangle.2.circlepath"
-        case .succeeded:
-            return "checkmark.seal.fill"
-        case .failed:
-            return "exclamationmark.triangle.fill"
-        }
-    }
-
-    private var autoFillTint: Color {
-        switch viewModel.autoFillSync.outcome {
-        case .succeeded:
-            return .green
-        case .failed:
-            return .orange
-        default:
-            return .accentColor
-        }
     }
 
     private var entrySection: some View {
