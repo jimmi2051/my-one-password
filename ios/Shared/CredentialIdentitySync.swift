@@ -59,7 +59,7 @@ enum CredentialIdentitySync {
         }
 
         return await withCheckedContinuation { continuation in
-            ASCredentialIdentityStore.shared.getCredentialIdentityStoreState { state in
+            ASCredentialIdentityStore.shared.getState { state in
                 ASCredentialIdentityStore.shared.replaceCredentialIdentities(with: identities) { success, error in
                     let attemptedAt = Date()
                     if let error {
