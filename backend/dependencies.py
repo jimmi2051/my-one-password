@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, Cookie
+from fastapi import Depends, HTTPException, Cookie, Header
 from typing import Optional
 from jose import JWTError
 from sqlalchemy.orm import Session
@@ -7,12 +7,24 @@ from models import UserProfile
 from auth.session import verify_token
 from vault_store import vault_store
 
-def get_current_user(
+
+def _get_session_token(
     session_token: Optional[str] = Cookie(default=None),
+    authorization: Optional[str] = Header(default=None),
+) -> str:
+    if session_token:
+        return session_token
+    if authorization and authorization.startswith("Bearer "):
+        token = authorization.removeprefix("Bearer ").strip()
+        if token:
+            return token
+    raise HTTPException(status_code=401, detail="Not authenticated")
+
+
+def get_current_user(
+    session_token: str = Depends(_get_session_token),
     db: Session = Depends(get_db),
 ) -> UserProfile:
-    if not session_token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
     try:
         payload = verify_token(session_token)
         google_sub = payload["sub"]
@@ -23,9 +35,8 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="User not found")
     return user
 
-def get_jti(session_token: Optional[str] = Cookie(default=None)) -> str:
-    if not session_token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+
+def get_jti(session_token: str = Depends(_get_session_token)) -> str:
     try:
         payload = verify_token(session_token)
         return payload["jti"]

@@ -2,6 +2,8 @@ import secrets
 import base64
 import time
 from collections import defaultdict
+from typing import Optional
+from urllib.parse import urlencode, urlparse
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -13,13 +15,13 @@ from auth.session import create_token, verify_token
 from auth.keychain import store_key, get_key, delete_key
 from crypto import generate_vault_key, derive_key, encrypt_key, decrypt_key
 from vault_store import vault_store
-from dependencies import get_current_user, get_jti, get_vault_key
+from dependencies import get_current_user, get_jti, get_vault_key, _get_session_token
 from jose import JWTError
 
 router = APIRouter()
 
-# Simple CSRF state store
-_oauth_states: dict[str, bool] = {}
+# Simple CSRF state store. Value is an optional mobile callback URI.
+_oauth_states: dict[str, Optional[str]] = {}
 
 # In-memory rate limiter for /auth/unlock: {ip: [timestamp, ...]}
 _unlock_attempts: dict[str, list[float]] = defaultdict(list)
@@ -37,10 +39,25 @@ def _check_rate_limit(ip: str) -> None:
     _unlock_attempts[ip] = hour_window
 
 
+def _validate_mobile_redirect_uri(uri: str) -> str:
+    from config import IOS_REDIRECT_SCHEMES
+
+    parsed = urlparse(uri)
+    if parsed.scheme not in IOS_REDIRECT_SCHEMES:
+        raise HTTPException(status_code=400, detail="Unsupported mobile redirect scheme")
+    if parsed.netloc or parsed.path:
+        return uri
+    raise HTTPException(status_code=400, detail="Invalid mobile redirect URI")
+
+
 @router.get("/auth/google")
-async def auth_google():
+async def auth_google(mobile_redirect_uri: Optional[str] = None):
     state = secrets.token_hex(16)
-    _oauth_states[state] = True
+    _oauth_states[state] = (
+        _validate_mobile_redirect_uri(mobile_redirect_uri)
+        if mobile_redirect_uri
+        else None
+    )
     return RedirectResponse(url=get_auth_url(state))
 
 
@@ -52,7 +69,7 @@ async def auth_callback(
 ):
     if state not in _oauth_states:
         raise HTTPException(status_code=400, detail="Invalid OAuth state")
-    del _oauth_states[state]
+    mobile_redirect_uri = _oauth_states.pop(state)
 
     try:
         tokens = exchange_code(code)
@@ -81,6 +98,18 @@ async def auth_callback(
         db.refresh(user)
 
     token, jti = create_token(google_sub, email)
+    if mobile_redirect_uri:
+        query = urlencode({
+            "token": token,
+            "email": email,
+            "unlocked": "false",
+        })
+        separator = "&" if "?" in mobile_redirect_uri else "?"
+        return RedirectResponse(
+            url=f"{mobile_redirect_uri}{separator}{query}",
+            status_code=302,
+        )
+
     from config import FRONTEND_URL, SAMESITE_POLICY
     samesite = SAMESITE_POLICY
     secure = samesite == "none" or FRONTEND_URL.startswith("https://")
@@ -103,14 +132,12 @@ async def unlock(
     body: UnlockRequest,
     response: Response,
     db: Session = Depends(get_db),
+    session_token: str = Depends(_get_session_token),
 ):
     # Rate limiting
     client_ip = request.client.host if request.client else "unknown"
     _check_rate_limit(client_ip)
 
-    session_token = request.cookies.get("session_token")
-    if not session_token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
     try:
         payload = verify_token(session_token)
         google_sub = payload["sub"]

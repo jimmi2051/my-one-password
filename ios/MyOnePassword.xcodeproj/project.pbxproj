@@ -1,0 +1,380 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		100000000000000000000001 /* MyOnePasswordApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000101 /* MyOnePasswordApp.swift */; };
+		100000000000000000000002 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000102 /* AppModel.swift */; };
+		100000000000000000000003 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000103 /* RootView.swift */; };
+		100000000000000000000004 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000104 /* LoginView.swift */; };
+		100000000000000000000005 /* UnlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000105 /* UnlockView.swift */; };
+		100000000000000000000006 /* VaultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000106 /* VaultView.swift */; };
+		100000000000000000000007 /* EntryEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000107 /* EntryEditorView.swift */; };
+		100000000000000000000008 /* CategoryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000108 /* CategoryListView.swift */; };
+		100000000000000000000009 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000201 /* AppConfiguration.swift */; };
+		10000000000000000000000A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000202 /* Models.swift */; };
+		10000000000000000000000B /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000203 /* APIClient.swift */; };
+		10000000000000000000000C /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000204 /* KeychainStore.swift */; };
+		10000000000000000000000D /* CredentialIdentitySync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000205 /* CredentialIdentitySync.swift */; };
+		10000000000000000000000E /* CredentialProviderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000301 /* CredentialProviderViewController.swift */; };
+		10000000000000000000000F /* CredentialListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000302 /* CredentialListView.swift */; };
+		100000000000000000000010 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000201 /* AppConfiguration.swift */; };
+		100000000000000000000011 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000202 /* Models.swift */; };
+		100000000000000000000012 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000203 /* APIClient.swift */; };
+		100000000000000000000013 /* KeychainStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000204 /* KeychainStore.swift */; };
+		100000000000000000000014 /* CredentialProvider.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 100000000000000000000402 /* CredentialProvider.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		100000000000000000000501 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 100000000000000000000601 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 100000000000000000000702;
+			remoteInfo = CredentialProvider;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		100000000000000000000801 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				100000000000000000000014 /* CredentialProvider.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		100000000000000000000101 /* MyOnePasswordApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyOnePasswordApp.swift; sourceTree = "<group>"; };
+		100000000000000000000102 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		100000000000000000000103 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		100000000000000000000104 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		100000000000000000000105 /* UnlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnlockView.swift; sourceTree = "<group>"; };
+		100000000000000000000106 /* VaultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaultView.swift; sourceTree = "<group>"; };
+		100000000000000000000107 /* EntryEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryEditorView.swift; sourceTree = "<group>"; };
+		100000000000000000000108 /* CategoryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryListView.swift; sourceTree = "<group>"; };
+		100000000000000000000109 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		10000000000000000000010A /* MyOnePassword.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyOnePassword.entitlements; sourceTree = "<group>"; };
+		100000000000000000000201 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		100000000000000000000202 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		100000000000000000000203 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		100000000000000000000204 /* KeychainStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainStore.swift; sourceTree = "<group>"; };
+		100000000000000000000205 /* CredentialIdentitySync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialIdentitySync.swift; sourceTree = "<group>"; };
+		100000000000000000000301 /* CredentialProviderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialProviderViewController.swift; sourceTree = "<group>"; };
+		100000000000000000000302 /* CredentialListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialListView.swift; sourceTree = "<group>"; };
+		100000000000000000000303 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		100000000000000000000304 /* CredentialProvider.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CredentialProvider.entitlements; sourceTree = "<group>"; };
+		100000000000000000000401 /* MyOnePassword.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyOnePassword.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		100000000000000000000402 /* CredentialProvider.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CredentialProvider.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		100000000000000000000901 = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000902 /* MyOnePasswordApp */,
+				100000000000000000000903 /* CredentialProvider */,
+				100000000000000000000904 /* Shared */,
+				100000000000000000000905 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		100000000000000000000902 /* MyOnePasswordApp */ = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000101 /* MyOnePasswordApp.swift */,
+				100000000000000000000102 /* AppModel.swift */,
+				100000000000000000000103 /* RootView.swift */,
+				100000000000000000000104 /* LoginView.swift */,
+				100000000000000000000105 /* UnlockView.swift */,
+				100000000000000000000106 /* VaultView.swift */,
+				100000000000000000000107 /* EntryEditorView.swift */,
+				100000000000000000000108 /* CategoryListView.swift */,
+				100000000000000000000109 /* Info.plist */,
+				10000000000000000000010A /* MyOnePassword.entitlements */,
+			);
+			path = MyOnePasswordApp;
+			sourceTree = "<group>";
+		};
+		100000000000000000000903 /* CredentialProvider */ = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000301 /* CredentialProviderViewController.swift */,
+				100000000000000000000302 /* CredentialListView.swift */,
+				100000000000000000000303 /* Info.plist */,
+				100000000000000000000304 /* CredentialProvider.entitlements */,
+			);
+			path = CredentialProvider;
+			sourceTree = "<group>";
+		};
+		100000000000000000000904 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000201 /* AppConfiguration.swift */,
+				100000000000000000000202 /* Models.swift */,
+				100000000000000000000203 /* APIClient.swift */,
+				100000000000000000000204 /* KeychainStore.swift */,
+				100000000000000000000205 /* CredentialIdentitySync.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		100000000000000000000905 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				100000000000000000000401 /* MyOnePassword.app */,
+				100000000000000000000402 /* CredentialProvider.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		100000000000000000000701 /* MyOnePassword */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 100000000000000000000A01 /* Build configuration list for PBXNativeTarget "MyOnePassword" */;
+			buildPhases = (
+				100000000000000000000B01 /* Sources */,
+				100000000000000000000801 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				100000000000000000000502 /* PBXTargetDependency */,
+			);
+			name = MyOnePassword;
+			productName = MyOnePassword;
+			productReference = 100000000000000000000401 /* MyOnePassword.app */;
+			productType = "com.apple.product-type.application";
+		};
+		100000000000000000000702 /* CredentialProvider */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 100000000000000000000A02 /* Build configuration list for PBXNativeTarget "CredentialProvider" */;
+			buildPhases = (
+				100000000000000000000B02 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CredentialProvider;
+			productName = CredentialProvider;
+			productReference = 100000000000000000000402 /* CredentialProvider.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		100000000000000000000601 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					100000000000000000000701 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					100000000000000000000702 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 100000000000000000000A00 /* Build configuration list for PBXProject "MyOnePassword" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 100000000000000000000901;
+			productRefGroup = 100000000000000000000905 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				100000000000000000000701 /* MyOnePassword */,
+				100000000000000000000702 /* CredentialProvider */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		100000000000000000000B01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				100000000000000000000001 /* MyOnePasswordApp.swift in Sources */,
+				100000000000000000000002 /* AppModel.swift in Sources */,
+				100000000000000000000003 /* RootView.swift in Sources */,
+				100000000000000000000004 /* LoginView.swift in Sources */,
+				100000000000000000000005 /* UnlockView.swift in Sources */,
+				100000000000000000000006 /* VaultView.swift in Sources */,
+				100000000000000000000007 /* EntryEditorView.swift in Sources */,
+				100000000000000000000008 /* CategoryListView.swift in Sources */,
+				100000000000000000000009 /* AppConfiguration.swift in Sources */,
+				10000000000000000000000A /* Models.swift in Sources */,
+				10000000000000000000000B /* APIClient.swift in Sources */,
+				10000000000000000000000C /* KeychainStore.swift in Sources */,
+				10000000000000000000000D /* CredentialIdentitySync.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		100000000000000000000B02 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10000000000000000000000E /* CredentialProviderViewController.swift in Sources */,
+				10000000000000000000000F /* CredentialListView.swift in Sources */,
+				100000000000000000000010 /* AppConfiguration.swift in Sources */,
+				100000000000000000000011 /* Models.swift in Sources */,
+				100000000000000000000012 /* APIClient.swift in Sources */,
+				100000000000000000000013 /* KeychainStore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		100000000000000000000502 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 100000000000000000000702 /* CredentialProvider */;
+			targetProxy = 100000000000000000000501 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		100000000000000000000C00 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		100000000000000000000C01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		100000000000000000000C10 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MyOnePasswordApp/MyOnePassword.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MyOnePasswordApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.myonepassword;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		100000000000000000000C11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MyOnePasswordApp/MyOnePassword.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MyOnePasswordApp/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.myonepassword;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		100000000000000000000C20 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CredentialProvider/CredentialProvider.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CredentialProvider/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.myonepassword.CredentialProvider;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		100000000000000000000C21 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = CredentialProvider/CredentialProvider.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CredentialProvider/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.myonepassword.CredentialProvider;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		100000000000000000000A00 /* Build configuration list for PBXProject "MyOnePassword" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				100000000000000000000C00 /* Debug */,
+				100000000000000000000C01 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		100000000000000000000A01 /* Build configuration list for PBXNativeTarget "MyOnePassword" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				100000000000000000000C10 /* Debug */,
+				100000000000000000000C11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		100000000000000000000A02 /* Build configuration list for PBXNativeTarget "CredentialProvider" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				100000000000000000000C20 /* Debug */,
+				100000000000000000000C21 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 100000000000000000000601 /* Project object */;
+}

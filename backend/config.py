@@ -47,3 +47,11 @@ WEBAUTHN_ORIGINS: list[str] = os.getenv(
 
 # CORS origins for Chrome extension (comma-separated, empty by default)
 EXTENSION_ORIGINS: str = os.getenv("EXTENSION_ORIGINS", "")
+
+# iOS custom URL schemes allowed for ASWebAuthenticationSession callbacks.
+# Comma-separated scheme names, without "://".
+IOS_REDIRECT_SCHEMES: list[str] = [
+    scheme.strip()
+    for scheme in os.getenv("IOS_REDIRECT_SCHEMES", "myonepassword").split(",")
+    if scheme.strip()
+]

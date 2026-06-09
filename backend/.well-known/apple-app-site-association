@@ -1,0 +1,8 @@
+{
+  "webcredentials": {
+    "apps": [
+      "TEAMID.com.example.myonepassword",
+      "TEAMID.com.example.myonepassword.CredentialProvider"
+    ]
+  }
+}

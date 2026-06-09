@@ -10,6 +10,7 @@ services:
       # Override .env values that differ inside Docker
       DB_PATH: /app/data/vault.db
       FRONTEND_URL: https://jimmi2051-ideapad-l340-15irh-gaming.tailcd88c1.ts.net
+      IOS_REDIRECT_SCHEMES: myonepassword
       PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
     volumes:
       - vault-data:/app/data
