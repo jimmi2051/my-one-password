@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct MyOnePasswordApp: App {
     @StateObject private var appModel = AppModel()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -14,6 +15,11 @@ struct MyOnePasswordApp: App {
                 .task {
                     await appModel.restoreSession()
                 }
+        }
+        .onChange(of: scenePhase) { newPhase in
+            if newPhase == .active {
+                Task { await appModel.checkSession() }
+            }
         }
     }
 }

@@ -26,6 +26,10 @@ final class KeychainStore {
         return try JSONDecoder().decode(UserSession.self, from: data)
     }
 
+    var hasBiometricUnlockSecret: Bool {
+        UserDefaults(suiteName: AppConfiguration.appGroupIdentifier)?.bool(forKey: "hasBiometricSecret") ?? false
+    }
+
     func saveBiometricUnlockSecret(_ masterPassword: String) throws {
         guard let data = masterPassword.data(using: .utf8) else {
             throw KeychainError.encodingFailed
@@ -40,6 +44,7 @@ final class KeychainStore {
             throw error?.takeRetainedValue() ?? KeychainError.encodingFailed
         }
         try save(data, account: unlockAccount, accessControl: access)
+        UserDefaults(suiteName: AppConfiguration.appGroupIdentifier)?.set(true, forKey: "hasBiometricSecret")
     }
 
     func loadBiometricUnlockSecret(reason: String) throws -> String {
@@ -55,7 +60,9 @@ final class KeychainStore {
     func clearAll() {
         delete(account: sessionAccount)
         delete(account: unlockAccount)
-        UserDefaults(suiteName: AppConfiguration.appGroupIdentifier)?.removeObject(forKey: "lastEmail")
+        let defaults = UserDefaults(suiteName: AppConfiguration.appGroupIdentifier)
+        defaults?.removeObject(forKey: "lastEmail")
+        defaults?.removeObject(forKey: "hasBiometricSecret")
     }
 
     private func baseQuery(account: String) -> [String: Any] {

@@ -40,5 +40,7 @@
 	</dict>
 	<key>UILaunchScreen</key>
 	<dict/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>My One Password uses Face ID to quickly unlock your vault.</string>
 </dict>
 </plist>

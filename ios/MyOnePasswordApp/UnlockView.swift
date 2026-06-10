@@ -8,6 +8,7 @@ struct UnlockView: View {
     @State private var rememberBiometrics = true
     @State private var isUnlocking = false
     @State private var isBiometricUnlocking = false
+    @State private var hasAutoTriggered = false
 
     var body: some View {
         ZStack {
@@ -70,24 +71,26 @@ struct UnlockView: View {
                         .buttonStyle(PremiumPrimaryButtonStyle())
                         .disabled(masterPassword.isEmpty || isUnlocking || isBiometricUnlocking)
 
-                        Button {
-                            Task { await biometricUnlock() }
-                        } label: {
-                            HStack {
-                                if isBiometricUnlocking {
-                                    ProgressView()
-                                } else {
-                                    Image(systemName: "faceid")
+                        if appModel.hasBiometricSecret {
+                            Button {
+                                Task { await biometricUnlock() }
+                            } label: {
+                                HStack {
+                                    if isBiometricUnlocking {
+                                        ProgressView()
+                                    } else {
+                                        Image(systemName: "faceid")
+                                    }
+                                    Text("Unlock with Face ID / Touch ID")
+                                        .fontWeight(.semibold)
                                 }
-                                Text("Unlock with Face ID / Touch ID")
-                                    .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 52)
                             }
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 52)
+                            .buttonStyle(.bordered)
+                            .tint(.white)
+                            .disabled(isUnlocking || isBiometricUnlocking)
                         }
-                        .buttonStyle(.bordered)
-                        .tint(.white)
-                        .disabled(isUnlocking || isBiometricUnlocking)
                     }
                     .padding(18)
                     .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
@@ -101,6 +104,11 @@ struct UnlockView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .onAppear {
+            guard appModel.hasBiometricSecret, !hasAutoTriggered else { return }
+            hasAutoTriggered = true
+            Task { await appModel.unlockWithBiometrics(silent: true) }
+        }
     }
 
     private func unlock() async {

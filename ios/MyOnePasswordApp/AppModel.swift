@@ -12,6 +12,7 @@ final class AppModel: NSObject, ObservableObject {
     }
 
     @Published private(set) var state: State = .loading
+    @Published private(set) var hasBiometricSecret = KeychainStore.shared.hasBiometricUnlockSecret
     @Published var errorMessage: String?
     @Published var isSigningIn = false
 
@@ -72,11 +73,24 @@ final class AppModel: NSObject, ObservableObject {
         }
     }
 
+    func checkSession() async {
+        guard case .unlocked(let session) = state else { return }
+        do {
+            let response = try await APIClient.shared.me()
+            if !response.unlocked {
+                state = .locked(session)
+            }
+        } catch {
+            state = .signedOut
+        }
+    }
+
     func unlock(masterPassword: String, rememberForBiometrics: Bool) async {
         do {
             _ = try await APIClient.shared.unlock(masterPassword: masterPassword)
             if rememberForBiometrics {
                 try KeychainStore.shared.saveBiometricUnlockSecret(masterPassword)
+                hasBiometricSecret = true
             }
             if let session = try? KeychainStore.shared.loadSession() {
                 state = .unlocked(session)
@@ -86,14 +100,16 @@ final class AppModel: NSObject, ObservableObject {
         }
     }
 
-    func unlockWithBiometrics() async {
+    func unlockWithBiometrics(silent: Bool = false) async {
         do {
             let masterPassword = try KeychainStore.shared.loadBiometricUnlockSecret(
                 reason: "Unlock My One Password"
             )
             await unlock(masterPassword: masterPassword, rememberForBiometrics: false)
         } catch {
-            errorMessage = "Biometric unlock is not available. Unlock with your master password first."
+            if !silent {
+                errorMessage = "Biometric unlock is not available. Unlock with your master password first."
+            }
         }
     }
 
@@ -104,6 +120,7 @@ final class AppModel: NSObject, ObservableObject {
             errorMessage = error.localizedDescription
         }
         KeychainStore.shared.clearAll()
+        hasBiometricSecret = false
         state = .signedOut
     }
 }
