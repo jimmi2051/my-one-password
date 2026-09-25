@@ -26,6 +26,31 @@ function HomeRedirect() {
   return <Navigate to={dest} replace />
 }
 
+function VaultRoute() {
+  const [dest, setDest] = useState<'/unlock' | '/login' | null>(null)
+  const [unlocked, setUnlocked] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+
+    authApi.me()
+      .then(({ data }) => {
+        if (cancelled) return
+        if (data.unlocked) setUnlocked(true)
+        else setDest('/unlock')
+      })
+      .catch(() => {
+        if (!cancelled) setDest('/login')
+      })
+
+    return () => { cancelled = true }
+  }, [])
+
+  if (dest) return <Navigate to={dest} replace />
+  if (!unlocked) return null
+  return <VaultPage />
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -33,7 +58,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/unlock" element={<UnlockPage />} />
-          <Route path="/vault" element={<VaultPage />} />
+          <Route path="/vault" element={<VaultRoute />} />
           <Route path="/" element={<HomeRedirect />} />
         </Routes>
       </BrowserRouter>
